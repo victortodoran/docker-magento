@@ -1,3 +1,7 @@
+## Recognition
+Shout-out to @lillik and @marius-grad who initially built this repo.
+I just added minor adjustments for maintenance and personal use.
+
 ## Requirements
 
 This project requires the Docker and Docker Compose installed on the machine. Please follow the Docker installation steps from https://docs.docker.com/engine/installation/ and docker compose installation steps from https://docs.docker.com/compose/install/.
@@ -67,4 +71,5 @@ Example for linux Mint:
  3. Restart or open again the terminal window.
  4. Change directory to project location.
  5. Run `composer` or `magento-cli` commands.
+ 
  
