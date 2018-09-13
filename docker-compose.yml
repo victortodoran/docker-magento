@@ -1,0 +1,92 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .docker/nginx/
+    image: vulpea/magento2-nginx
+    container_name: vulpea_magento2_nginx
+    depends_on:
+      - db
+      - phpfpm
+    links:
+      - db
+      - phpfpm
+      - redis-magento
+      - mailcatcher
+    volumes: &appvolumes
+      - ./html:/var/www/html
+      - ./.composer:/var/www/.composer
+      - $HOME/.ssh/id_rsa:/root/.ssh/id_rsa
+      - $HOME/.ssh/id_rsa:/var/www/.ssh/id_rsa
+      - $HOME/.ssh/known_hosts:/var/www/.ssh/known_hosts
+    ports:
+      - 80
+    networks: &appnetworks
+      www:
+        ipv4_address: 172.20.0.5
+
+  phpfpm:
+    build:
+      context: .docker/php/
+    image: vulpea/magento2-php
+    container_name: vulpea_magento2_php
+    depends_on:
+      - db
+    links:
+      - db
+    volumes: *appvolumes
+    networks:
+      www:
+        ipv4_address: 172.20.0.6
+    env_file: .env/setup.env
+
+  db:
+    image: percona:5.7
+    volumes:
+      - ./dbdata/mysql:/var/lib/mysql
+    ports:
+      - 3306
+    networks:
+      www:
+        ipv4_address: 172.20.0.7
+    env_file: .env/mysql.env
+
+  setup:
+    image: vulpea/magento2-php
+    command: /usr/local/bin/mage-setup
+    links:
+      - db
+    volumes: *appvolumes
+    networks:
+      www:
+        ipv4_address: 172.20.0.12
+    env_file: .env/setup.env
+
+  redis-magento:
+    build: ./.docker/redis
+    image: vulpea/m2-redis:3.0.7
+    container_name: vulpea_m2_redis
+    ports:
+      - 6379
+    networks:
+      www:
+        ipv4_address: 172.20.0.8
+
+  mailcatcher:
+     build: ./.docker/mailcatcher
+     container_name: mailcatcher
+     image: vulpea/mailcatcher:0.6.4
+     ports:
+       - 1080:1080
+       - 1025
+     networks:
+       www:
+         ipv4_address: 172.20.0.11
+
+networks:
+  www:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

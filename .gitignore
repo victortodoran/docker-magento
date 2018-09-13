@@ -1,0 +1,7 @@
+dbdata/mysql
+nbproject/private/
+html
+.composer/cache/
+.composer/auth.json
+.idea
+html-old
