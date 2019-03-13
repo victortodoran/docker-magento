@@ -4,7 +4,7 @@ I just added minor adjustments for maintenance and personal use.
 
 ## Requirements
 
-This project requires the Docker and Docker Compose installed on the machine. Please follow the Docker installation steps from https://docs.docker.com/engine/installation/ and docker compose installation steps from https://docs.docker.com/compose/install/.
+This project requiresDocker and Docker Compose installed on the machine. Please follow the Docker installation steps from https://docs.docker.com/engine/installation/ and docker compose installation steps from https://docs.docker.com/compose/install/.
 
 ## Installation
 
