@@ -5,3 +5,6 @@ html
 .composer/auth.json
 .idea
 html-old
+.docker/elasticsearch/elasticsearch01/data/*
+.docker/elasticsearch/elasticsearch01/logs/*
+
