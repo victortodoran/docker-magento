@@ -13,6 +13,8 @@ services:
       - phpfpm
       - redis-magento
       - mailcatcher
+      - kibana
+      - elasticsearch01
     volumes: &appvolumes
       - ./html:/var/www/html
       - ./.composer:/var/www/.composer
@@ -88,7 +90,7 @@ services:
       container_name: elasticsearch01
       environment:
         - node.name=elasticsearch01
-        - cluster.name=thesis-cluster
+        - cluster.name=magento-cluster
         - bootstrap.memory_lock=true
         - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       ulimits:
@@ -114,8 +116,6 @@ services:
      networks:
         www:
           ipv4_address: 172.20.0.14
-
-
 
 networks:
   www:
