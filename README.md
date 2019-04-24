@@ -73,3 +73,5 @@ Example for linux Mint:
  5. Run `composer` or `magento-cli` commands.
  
  
+
+sudo docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(sudo docker ps -aq)

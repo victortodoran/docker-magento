@@ -1,5 +1,4 @@
 version: "3"
-
 services:
   app:
     build:
@@ -42,7 +41,7 @@ services:
     env_file: .env/setup.env
 
   db:
-    image: percona:5.7
+    image: mysql:5.7
     volumes:
       - ./dbdata/mysql:/var/lib/mysql
     ports:
@@ -83,6 +82,40 @@ services:
      networks:
        www:
          ipv4_address: 172.20.0.11
+
+  elasticsearch01:
+      image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
+      container_name: elasticsearch01
+      environment:
+        - node.name=elasticsearch01
+        - cluster.name=thesis-cluster
+        - bootstrap.memory_lock=true
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      ulimits:
+        memlock:
+          soft: -1
+          hard: -1
+      volumes:
+        - ./.docker/elasticsearch/elasticsearch01/data:/usr/share/elasticsearch/data
+        - ./.docker/elasticsearch/elasticsearch01/logs:/usr/share/elasticsearch/logs
+      ports:
+        - 9200:9200
+      networks:
+         www:
+           ipv4_address: 172.20.0.13
+
+  kibana:
+     image: docker.elastic.co/kibana/kibana:6.1.4
+     container_name: kibana
+     environment:
+         - "ELASTICSEARCH_URL=http://elasticsearch01:9200"
+     ports:
+       - 5601:5601
+     networks:
+        www:
+          ipv4_address: 172.20.0.14
+
+
 
 networks:
   www:
