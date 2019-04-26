@@ -1,10 +1,12 @@
+## Disclaimer
+Under no circumstance do NOT use this in production. 
+This offers a quick way to start development with Magento2 locally. 
+
 ## Recognition
-Shout-out to @lillik and @marius-grad who initially built this repo.
-I just added minor adjustments for maintenance and personal use.
+Shout-out to @lillik and @marius-grad who laid the first bricks of this repo.
 
 ## Requirements
-
-This project requiresDocker and Docker Compose installed on the machine. Please follow the Docker installation steps from https://docs.docker.com/engine/installation/ and docker compose installation steps from https://docs.docker.com/compose/install/.
+This project requires Docker and Docker Compose installed on the machine. Please follow the Docker installation steps from https://docs.docker.com/engine/installation/ and docker compose installation steps from https://docs.docker.com/compose/install/.
 
 ## Installation
 
@@ -47,3 +49,35 @@ Please follow the next steps:
 
 ## Enter magento(PHP) container to run commands
 `docker-compose exec -u www-data phpfpm bash`
+
+
+## Use Redis and Memcached for cache.
+Add the following to app/etc/env.php 
+`   'session' =>
+        array (
+            'save' => 'memcached',
+            'save_path' => 'memcached:11211',
+        ),
+    'cache' => [
+        'frontend' => [
+            'default' => [
+                'backend' => 'Cm_Cache_Backend_Redis',
+                'backend_options' => [
+                    'server' => 'redis-magento',
+                    'database' => '0',
+                    'port' => '6379'
+                ]
+            ],
+            'page_cache' => [
+                'backend' => 'Cm_Cache_Backend_Redis',
+                'backend_options' => [
+                    'server' => 'redis-magento',
+                    'port' => '6379',
+                    'database' => '1',
+                    'compress_data' => '0'
+                ]
+            ]
+        ]
+    ],
+`
+
