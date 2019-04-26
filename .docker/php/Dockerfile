@@ -11,8 +11,8 @@ RUN apt-get update \
     mysql-client \
     libxslt1-dev
 
-RUN docker-php-ext-configure \
-  gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-configure gd \
+    --enable-gd-native-ttf --with-freetype-dir=/usr/include/freetype2 --with-png-dir=/usr/include --with-jpeg-dir=/usr/include
 
 RUN docker-php-ext-install \
   bcmath \
@@ -25,7 +25,15 @@ RUN docker-php-ext-install \
   xsl \
   zip
 
-RUN apt-get install -y git
+RUN apt-get install -y git libmemcached-dev libmemcached11
+
+#Adding memcached library, fittable with/for PHP7
+RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached \
+ && docker-php-ext-configure /usr/src/php/ext/memcached \
+     --disable-memcached-sasl \
+ && docker-php-ext-install /usr/src/php/ext/memcached \
+ && rm -rf /usr/src/php/ext/memcached
+
 
 RUN curl -sS https://getcomposer.org/installer | \
   php -- --install-dir=/usr/local/bin --filename=composer --prefer-dist
