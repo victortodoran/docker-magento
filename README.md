@@ -34,44 +34,16 @@ Please follow the next steps:
 ## Network IPs ##
 | Container | IP |
 |--------|--------|
-|Magento 2 NGINX|172.20.0.5|
-|Magento 2 PHP|172.20.0.6|
-|Magento 2 MySQl|172.20.0.7|
-|Magento 2 Redis|172.20.0.8|
-
-## How to use composer application
-
-In order to run composer commands you need to be in the directory of the project(where this docker compose file is used) and type this:
-
-`docker-compose exec -u www-data phpfpm composer [composer CLI options]`
-
-Example of composer update command:
-
-`docker-compose exec -u www-data phpfpm composer update`
-
-## How to use Magento 2 CLI
-
-The next command can be used in the directory of the project (where this docker compose file is used):
-
-`docker-compose exec phpfpm magento [magento CLI options]`
+|M2 NGINX|172.20.0.2|
+|M2 PHP|172.20.0.3|
+|M2 MySQl|172.20.0.4|
+|M2 Redis|172.20.0.5|
+|M2 Memcached|172.20.0.6|
+|M2 Mailcatcher|172.20.0.7|
+|M2 Elaticsearch01|172.20.0.8|
+|M2 Kibana|172.20.0.9|
+|M2 Logstash|172.20.0.10|
 
 
-## Suggestions
-Try using CLI aliases for the composer and magento.
-
-Example for linux Mint:
-
- 1. Open the __.bashrc__ file
- 2. Add the next text at the end of the file:
-
-`alias magento-cli='docker-compose exec phpfpm magento'`
-
-`alias composer='docker-compose exec -u www-data phpfpm composer'`
-
- 3. Restart or open again the terminal window.
- 4. Change directory to project location.
- 5. Run `composer` or `magento-cli` commands.
- 
- 
-
-sudo docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(sudo docker ps -aq)
+## Enter magento(PHP) container to run commands
+`docker-compose exec -u www-data phpfpm bash`

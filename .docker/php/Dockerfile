@@ -52,10 +52,13 @@ RUN npm install -g yo grunt-cli
 RUN npm install --global gulp
 
 # Install Mailcatcher
-RUN apt-get update &&\
-    apt-get -y install build-essential ruby-full libsqlite3-dev &&\    
+RUN apt-get update
+
+RUN apt-get -y install build-essential ruby-full libsqlite3-dev &&\
     gem install mailcatcher --no-rdoc --no-ri
 
+# Install nano
+RUN apt-get install -y nano
 
 ENV PHP_MEMORY_LIMIT 2G
 ENV PHP_PORT 9000

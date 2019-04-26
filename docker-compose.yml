@@ -15,6 +15,8 @@ services:
       - mailcatcher
       - kibana
       - elasticsearch01
+      - logstash
+      - memcached
     volumes: &appvolumes
       - ./html:/var/www/html
       - ./.composer:/var/www/.composer
@@ -25,13 +27,13 @@ services:
       - 80
     networks: &appnetworks
       www:
-        ipv4_address: 172.20.0.5
+        ipv4_address: 172.20.0.2
 
   phpfpm:
     build:
       context: .docker/php/
-    image: vulpea/magento2-php
-    container_name: vulpea_magento2_php
+    image: vulpea/magento2-php:7.1
+    container_name: vulpea_phpfpm
     depends_on:
       - db
     links:
@@ -39,7 +41,7 @@ services:
     volumes: *appvolumes
     networks:
       www:
-        ipv4_address: 172.20.0.6
+        ipv4_address: 172.20.0.3
     env_file: .env/setup.env
 
   db:
@@ -50,7 +52,7 @@ services:
       - 3306
     networks:
       www:
-        ipv4_address: 172.20.0.7
+        ipv4_address: 172.20.0.4
     env_file: .env/mysql.env
 
   setup:
@@ -59,40 +61,46 @@ services:
     links:
       - db
     volumes: *appvolumes
-    networks:
-      www:
-        ipv4_address: 172.20.0.12
     env_file: .env/setup.env
 
   redis-magento:
     build: ./.docker/redis
     image: vulpea/m2-redis:3.0.7
-    container_name: vulpea_m2_redis
+    container_name: vulpea_redis
     ports:
       - 6379
     networks:
       www:
-        ipv4_address: 172.20.0.8
+        ipv4_address: 172.20.0.5
+
+  memcached:
+    image: bmi/memcached:1.4.35
+    container_name: vulpea_memcached
+    ports:
+      - 11211
+    networks:
+      www:
+        ipv4_address: 172.20.0.6
 
   mailcatcher:
      build: ./.docker/mailcatcher
-     container_name: mailcatcher
+     container_name: vulpea_mailcatcher
      image: vulpea/mailcatcher:0.6.4
      ports:
-       - 1080:1080
+       - 1080
        - 1025
      networks:
        www:
-         ipv4_address: 172.20.0.11
+         ipv4_address: 172.20.0.7
 
   elasticsearch01:
       image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
-      container_name: elasticsearch01
+      container_name: vulpea_elasticsearch01
       environment:
         - node.name=elasticsearch01
         - cluster.name=magento-cluster
         - bootstrap.memory_lock=true
-        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+        - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
       ulimits:
         memlock:
           soft: -1
@@ -101,21 +109,42 @@ services:
         - ./.docker/elasticsearch/elasticsearch01/data:/usr/share/elasticsearch/data
         - ./.docker/elasticsearch/elasticsearch01/logs:/usr/share/elasticsearch/logs
       ports:
-        - 9200:9200
+        - 9200
       networks:
          www:
-           ipv4_address: 172.20.0.13
+           ipv4_address: 172.20.0.8
 
   kibana:
      image: docker.elastic.co/kibana/kibana:6.1.4
-     container_name: kibana
+     container_name: vulpea_kibana
      environment:
          - "ELASTICSEARCH_URL=http://elasticsearch01:9200"
      ports:
-       - 5601:5601
+       - 5601
+     links:
+       - elasticsearch01
+     depends_on:
+       - elasticsearch01
      networks:
         www:
-          ipv4_address: 172.20.0.14
+          ipv4_address: 172.20.0.9
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash-oss:6.1.4
+    container_name: vulpea_logstash
+    volumes:
+      - ./.docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./.docker/logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./html/var/log:/var/logstash/magento-logs
+    ports:
+      - 9600
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch01
+    networks:
+          www:
+            ipv4_address: 172.20.0.10
 
 networks:
   www:
