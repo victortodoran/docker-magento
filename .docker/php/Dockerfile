@@ -45,20 +45,6 @@ docker-php-ext-enable xdebug
 # Install Mysql Client
 RUN apt-get -y install mysql-client
 
-# Node requires gnupg
-RUN apt-get update && apt-get install -my wget gnupg
-
-# Install NodeJS
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-  && apt-get install -yq nodejs build-essential
-
-# Install common full-stack JavaScript packages globally
-# http://blog.nodejs.org/2011/03/23/npm-1-0-global-vs-local-installation
-RUN npm install -g yo grunt-cli
-
-# Install gulp global
-RUN npm install --global gulp
-
 # Install Mailcatcher
 RUN apt-get update
 
