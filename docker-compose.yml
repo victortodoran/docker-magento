@@ -39,6 +39,8 @@ services:
     links:
       - db
     volumes: *appvolumes
+    ports:
+      - 9000
     networks:
       www:
         ipv4_address: 172.20.0.3
