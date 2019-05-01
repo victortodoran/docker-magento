@@ -43,6 +43,10 @@ services:
       www:
         ipv4_address: 172.20.0.3
     env_file: .env/setup.env
+    environment:
+    - XDEBUG_CONFIG=remote_host=172.20.0.1
+    - PHP_IDE_CONFIG=serverName=sandbox.local
+    - XDEBUG_CONFIG=xdebug.idekey=PHPSTORM
 
   db:
     image: mysql:5.7
