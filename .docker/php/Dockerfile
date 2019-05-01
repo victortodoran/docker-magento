@@ -73,5 +73,6 @@ RUN usermod -u 1000 www-data
 RUN usermod -G 100 www-data
 
 WORKDIR /var/www/html
+EXPOSE 9000
 
 CMD ["/usr/local/bin/start"]
