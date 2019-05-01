@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 services:
   app:
     build:
@@ -26,13 +26,13 @@ services:
     ports:
       - 80
     networks: &appnetworks
-      www:
+      default:
         ipv4_address: 172.20.0.2
 
   phpfpm:
     build:
       context: .docker/php/
-    image: vulpea/magento2-php:7.1
+    image: vulpea/magento2-php
     container_name: vulpea_phpfpm
     depends_on:
       - db
@@ -42,7 +42,7 @@ services:
     ports:
       - 9000
     networks:
-      www:
+      default:
         ipv4_address: 172.20.0.3
     env_file: .env/setup.env
     environment:
@@ -57,7 +57,7 @@ services:
     ports:
       - 3306
     networks:
-      www:
+      default:
         ipv4_address: 172.20.0.4
     env_file: .env/mysql.env
 
@@ -76,7 +76,7 @@ services:
     ports:
       - 6379
     networks:
-      www:
+      default:
         ipv4_address: 172.20.0.5
 
   memcached:
@@ -85,7 +85,7 @@ services:
     ports:
       - 11211
     networks:
-      www:
+      default:
         ipv4_address: 172.20.0.6
 
   mailcatcher:
@@ -96,7 +96,7 @@ services:
        - 1080
        - 1025
      networks:
-       www:
+       default:
          ipv4_address: 172.20.0.7
 
   elasticsearch01:
@@ -117,7 +117,7 @@ services:
       ports:
         - 9200
       networks:
-         www:
+         default:
            ipv4_address: 172.20.0.8
 
   kibana:
@@ -132,7 +132,7 @@ services:
      depends_on:
        - elasticsearch01
      networks:
-        www:
+        default:
           ipv4_address: 172.20.0.9
 
   logstash:
@@ -149,12 +149,15 @@ services:
     depends_on:
       - elasticsearch01
     networks:
-          www:
+          default:
             ipv4_address: 172.20.0.10
 
 networks:
-  www:
+  default:
     driver: bridge
     ipam:
+      driver: default
       config:
         - subnet: 172.20.0.0/16
+
+
