@@ -1,4 +1,6 @@
+
 version: "2"
+
 services:
   app:
     build:
@@ -13,9 +15,6 @@ services:
       - phpfpm
       - redis-magento
       - mailcatcher
-      - kibana
-      - elasticsearch01
-      - logstash
       - memcached
     volumes: &appvolumes
       - ./html:/var/www/html
@@ -27,7 +26,11 @@ services:
       - 80
     networks: &appnetworks
       default:
-        ipv4_address: 172.20.0.2
+        ipv4_address: 172.20.0.3
+    environment:
+      - XDEBUG_CONFIG=remote_host=172.20.0.1
+      - PHP_IDE_CONFIG=serverName=sandbox.local
+      - XDEBUG_CONFIG=xdebug.idekey=PHPSTORM
 
   phpfpm:
     build:
@@ -43,12 +46,12 @@ services:
       - 9000
     networks:
       default:
-        ipv4_address: 172.20.0.3
+        ipv4_address: 172.20.0.4
     env_file: .env/setup.env
     environment:
-    - XDEBUG_CONFIG=remote_host=172.20.0.1
-    - PHP_IDE_CONFIG=serverName=sandbox.local
-    - XDEBUG_CONFIG=xdebug.idekey=PHPSTORM
+      - XDEBUG_CONFIG=remote_host=172.20.0.1
+      - PHP_IDE_CONFIG=serverName=sandbox.local
+      - XDEBUG_CONFIG=xdebug.idekey=PHPSTORM
 
   db:
     image: mysql:5.7
@@ -58,7 +61,7 @@ services:
       - 3306
     networks:
       default:
-        ipv4_address: 172.20.0.4
+        ipv4_address: 172.20.0.5
     env_file: .env/mysql.env
 
   setup:
@@ -70,23 +73,23 @@ services:
     env_file: .env/setup.env
 
   redis-magento:
-    build: ./.docker/redis
-    image: vulpea/m2-redis:3.0.7
+    image: redis:3.0.7
     container_name: vulpea_redis
     ports:
       - 6379
+      - 1985
     networks:
       default:
-        ipv4_address: 172.20.0.5
+        ipv4_address: 172.20.0.6
 
   memcached:
-    image: bmi/memcached:1.4.35
+    image: memcached:1.4.35
     container_name: vulpea_memcached
     ports:
       - 11211
     networks:
       default:
-        ipv4_address: 172.20.0.6
+        ipv4_address: 172.20.0.7
 
   mailcatcher:
      build: ./.docker/mailcatcher
@@ -97,7 +100,7 @@ services:
        - 1025
      networks:
        default:
-         ipv4_address: 172.20.0.7
+         ipv4_address: 172.20.0.8
 
   elasticsearch01:
       image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
@@ -118,7 +121,7 @@ services:
         - 9200
       networks:
          default:
-           ipv4_address: 172.20.0.8
+           ipv4_address: 172.20.0.9
 
   kibana:
      image: docker.elastic.co/kibana/kibana:6.1.4
@@ -133,7 +136,7 @@ services:
        - elasticsearch01
      networks:
         default:
-          ipv4_address: 172.20.0.9
+          ipv4_address: 172.20.0.10
 
   logstash:
     image: docker.elastic.co/logstash/logstash-oss:6.1.4
@@ -150,14 +153,14 @@ services:
       - elasticsearch01
     networks:
           default:
-            ipv4_address: 172.20.0.10
+            ipv4_address: 172.20.0.11
 
 networks:
   default:
     driver: bridge
     ipam:
-      driver: default
       config:
         - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
 
 

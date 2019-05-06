@@ -12,4 +12,4 @@ echo "*/1 * * * * su -c \"/usr/local/bin/php $SRC_DIR/update/cron.php\" -s /bin/
   && (crontab -l ; echo "*/1 * * * * su -c \"/usr/local/bin/php $SRC_DIR/bin/magento setup:cron:run\" -s /bin/sh www-data > /proc/1/fd/2 2>&1") | crontab -
 
 # Start the cron service
-/usr/sbin/cron
+#/usr/sbin/cron

@@ -1,4 +1,4 @@
-FROM php:7.1-fpm
+FROM php:7.2-fpm
 
 RUN apt-get update \
   && apt-get install -y \
@@ -19,11 +19,13 @@ RUN docker-php-ext-install \
   gd \
   intl \
   mbstring \
-  mcrypt \
   pdo_mysql \
   soap \
   xsl \
   zip
+
+RUN pecl channel-update pecl.php.net
+RUN pecl install mcrypt-1.0.1
 
 RUN apt-get install -y git libmemcached-dev libmemcached11
 
@@ -38,9 +40,10 @@ RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/sr
 RUN curl -sS https://getcomposer.org/installer | \
   php -- --install-dir=/usr/local/bin --filename=composer --prefer-dist
 
+
+
 # Install Xdebug
-RUN pecl install xdebug && \
-docker-php-ext-enable xdebug
+RUN pecl install -o -f xdebug-2.6.1 && docker-php-ext-enable xdebug
 
 # Install Mysql Client
 RUN apt-get -y install mysql-client
