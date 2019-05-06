@@ -130,10 +130,6 @@ services:
          - "ELASTICSEARCH_URL=http://elasticsearch01:9200"
      ports:
        - 5601
-     links:
-       - elasticsearch01
-     depends_on:
-       - elasticsearch01
      networks:
         default:
           ipv4_address: 172.20.0.10
@@ -149,8 +145,6 @@ services:
       - 9600
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    depends_on:
-      - elasticsearch01
     networks:
           default:
             ipv4_address: 172.20.0.11
