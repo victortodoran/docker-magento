@@ -36,15 +36,15 @@ Please follow the next steps:
 ## Network IPs ##
 | Container | IP |
 |--------|--------|
-|M2 NGINX|172.20.0.2|
-|M2 PHP|172.20.0.3|
-|M2 MySQl|172.20.0.4|
-|M2 Redis|172.20.0.5|
-|M2 Memcached|172.20.0.6|
-|M2 Mailcatcher|172.20.0.7|
-|M2 Elaticsearch01|172.20.0.8|
-|M2 Kibana|172.20.0.9|
-|M2 Logstash|172.20.0.10|
+|M2 NGINX|172.20.0.3|
+|M2 PHP|172.20.0.4|
+|M2 MySQl|172.20.0.5|
+|M2 Redis|172.20.0.6|
+|M2 Memcached|172.20.0.7|
+|M2 Mailcatcher|172.20.0.8|
+|M2 Elaticsearch01|172.20.0.9|
+|M2 Kibana|172.20.0.10|
+|M2 Logstash|172.20.0.11|
 
 
 ## Enter magento(PHP) container to run commands

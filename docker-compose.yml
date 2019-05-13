@@ -1,12 +1,10 @@
-
 version: "2"
-
 services:
   app:
     build:
       context: .docker/nginx/
     image: vulpea/magento2-nginx
-    container_name: vulpea_magento2_nginx
+    container_name: vulpea_magento2_nginx_os
     depends_on:
       - db
       - phpfpm
@@ -36,7 +34,7 @@ services:
     build:
       context: .docker/php/
     image: vulpea/magento2-php
-    container_name: vulpea_phpfpm
+    container_name: vulpea_phpfpm_os
     depends_on:
       - db
     links:
@@ -55,6 +53,7 @@ services:
 
   db:
     image: mysql:5.7
+    container_name: vulpea_db_os
     volumes:
       - ./dbdata/mysql:/var/lib/mysql
     ports:
@@ -66,6 +65,7 @@ services:
 
   setup:
     image: vulpea/magento2-php
+    container_name: vulpea_setup_os
     command: /usr/local/bin/mage-setup
     links:
       - db
@@ -74,7 +74,7 @@ services:
 
   redis-magento:
     image: redis:3.0.7
-    container_name: vulpea_redis
+    container_name: vulpea_redis_os
     ports:
       - 6379
       - 1985
@@ -84,7 +84,7 @@ services:
 
   memcached:
     image: memcached:1.4.35
-    container_name: vulpea_memcached
+    container_name: vulpea_memcached_os
     ports:
       - 11211
     networks:
@@ -93,7 +93,7 @@ services:
 
   mailcatcher:
      build: ./.docker/mailcatcher
-     container_name: vulpea_mailcatcher
+     container_name: vulpea_mailcatcher_os
      image: vulpea/mailcatcher:0.6.4
      ports:
        - 1080
@@ -104,7 +104,7 @@ services:
 
   elasticsearch01:
       image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
-      container_name: vulpea_elasticsearch01
+      container_name: vulpea_elasticsearch01_os
       environment:
         - node.name=elasticsearch01
         - cluster.name=magento-cluster
@@ -125,7 +125,7 @@ services:
 
   kibana:
      image: docker.elastic.co/kibana/kibana:6.1.4
-     container_name: vulpea_kibana
+     container_name: vulpea_kibana_os
      environment:
          - "ELASTICSEARCH_URL=http://elasticsearch01:9200"
      ports:
@@ -136,7 +136,7 @@ services:
 
   logstash:
     image: docker.elastic.co/logstash/logstash-oss:6.1.4
-    container_name: vulpea_logstash
+    container_name: vulpea_logstash_os
     volumes:
       - ./.docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./.docker/logstash/pipeline:/usr/share/logstash/pipeline:ro
