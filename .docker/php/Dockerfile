@@ -8,11 +8,11 @@ RUN apt-get update \
     libjpeg62-turbo-dev \
     libmcrypt-dev \
     libpng-dev \
-    mysql-client \
+    mariadb-client \
     libxslt1-dev
 
 RUN docker-php-ext-configure gd \
-    --enable-gd-native-ttf --with-freetype-dir=/usr/include/freetype2 --with-png-dir=/usr/include --with-jpeg-dir=/usr/include
+    --with-freetype-dir=/usr/include/freetype2 --with-png-dir=/usr/include --with-jpeg-dir=/usr/include
 
 RUN docker-php-ext-install \
   bcmath \
@@ -44,9 +44,6 @@ RUN curl -sS https://getcomposer.org/installer | \
 
 # Install Xdebug
 RUN pecl install -o -f xdebug-2.6.1 && docker-php-ext-enable xdebug
-
-# Install Mysql Client
-RUN apt-get -y install mysql-client
 
 # Install Mailcatcher
 RUN apt-get update
