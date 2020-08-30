@@ -7,4 +7,4 @@ html
 html-old
 .docker/elasticsearch/elasticsearch01/data/*
 .docker/elasticsearch/elasticsearch01/logs/*
-
+.docker/dbdata/*

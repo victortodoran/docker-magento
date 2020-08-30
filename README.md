@@ -44,55 +44,9 @@ Please follow the next steps:
 |M2 Elaticsearch01|172.20.0.9|
 
 ## Enter magento(PHP) container to run commands
-`docker-compose exec -u www-data phpfpm bash`
+`docker-compose exec -u www-data -it sandbox-php bash`
 
+## Configure Redis for FPC and Session
+`@see env.php.dist`
 
-## Use Redis and Memcached for cache.
-Add the following to app/etc/env.php 
-`   'session' =>
-        [
-            'save' => 'redis',
-            'redis' => [
-                        'host' => 'redis',
-                        'port' => '6379',
-                        'password' => '',
-                        'timeout' => '2.5',
-                        'persistent_identifier' => '',
-                        'database' => '0',
-                        'compression_threshold' => '2048',
-                        'compression_library' => 'gzip',
-                        'log_level' => '1',
-                        'max_concurrency' => '6',
-                        'break_after_frontend' => '5',
-                        'break_after_adminhtml' => '30',
-                        'first_lifetime' => '600',
-                        'bot_first_lifetime' => '60',
-                        'bot_lifetime' => '7200',
-                        'disable_locking' => '0',
-                        'min_lifetime' => '60',
-                        'max_lifetime' => '2592000'
-                    ]
-        ],
-    'cache' => [
-        'frontend' => [
-            'default' => [
-                'backend' => 'Cm_Cache_Backend_Redis',
-                'backend_options' => [
-                    'server' => 'redis',
-                    'database' => '0',
-                    'port' => '6379'
-                ]
-            ],
-            'page_cache' => [
-                'backend' => 'Cm_Cache_Backend_Redis',
-                'backend_options' => [
-                    'server' => 'redis',
-                    'port' => '6379',
-                    'database' => '1',
-                    'compress_data' => '0'
-                ]
-            ]
-        ]
-    ],
-`
 

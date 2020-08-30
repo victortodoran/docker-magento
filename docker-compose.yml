@@ -4,7 +4,7 @@ services:
     build:
       context: .docker/nginx/
     image: vulpea/magento2-nginx
-    container_name: vulpea_magento2_nginx_os
+    container_name: sandbox-nginx
     depends_on:
       - db
       - phpfpm
@@ -33,7 +33,7 @@ services:
     build:
       context: .docker/php/
     image: vulpea/magento2-php
-    container_name: vulpea_phpfpm_os
+    container_name: sandbox-php
     depends_on:
       - db
     links:
@@ -53,9 +53,9 @@ services:
 
   db:
     image: mysql:5.7
-    container_name: vulpea_db_os
+    container_name: sandbox-db
     volumes:
-      - ./dbdata/mysql:/var/lib/mysql
+      - ./.docker/dbdata/mysql:/var/lib/mysql
     ports:
       - 3306
     networks:
@@ -65,7 +65,7 @@ services:
 
   setup:
     image: vulpea/magento2-php
-    container_name: vulpea_setup_os
+    container_name: sandbox-setup
     command: /usr/local/bin/mage-setup
     links:
       - db
@@ -93,9 +93,9 @@ services:
        default:
          ipv4_address: 172.20.0.8
 
-  elasticsearch01:
+  elasticsearch1:
       image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
-      container_name: vulpea_elasticsearch01_os
+      container_name: sandbox-elastic1
       environment:
         - node.name=elasticsearch1
         - cluster.name=magento-cluster
@@ -106,8 +106,8 @@ services:
           soft: -1
           hard: -1
       volumes:
-        - ./.docker/elasticsearch/elasticsearch01/data:/usr/share/elasticsearch/data
-        - ./.docker/elasticsearch/elasticsearch01/logs:/usr/share/elasticsearch/logs
+        - ./.docker/elasticsearch/elasticsearch1/data:/usr/share/elasticsearch/data
+        - ./.docker/elasticsearch/elasticsearch1/logs:/usr/share/elasticsearch/logs
       ports:
         - 9200
       networks:
