@@ -12,7 +12,7 @@ This project requires Docker and Docker Compose installed on the machine. Please
 
 Please follow the next steps:
 1. Download or clone this project in the directory you want to have the project installed.
-2. Open the file `auth.json` from directory .composer and add your [repo.magento.com](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html) credentials
+2. Create a new file `auth.json` in directory .composer and add your [repo.magento.com](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html) credentials
 
             "username": "YOUR_USERNAME_USED_ON_REPO_MAGENTO",
             "password": "YOUR_PASSWORD_USED_ON_REPO_MAGENTO"
