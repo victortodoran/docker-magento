@@ -27,20 +27,8 @@ RUN docker-php-ext-install \
 RUN pecl channel-update pecl.php.net
 RUN pecl install mcrypt-1.0.1
 
-RUN apt-get install -y git libmemcached-dev libmemcached11
-
-#Adding memcached library, fittable with/for PHP7
-RUN git clone -b php7 https://github.com/php-memcached-dev/php-memcached /usr/src/php/ext/memcached \
- && docker-php-ext-configure /usr/src/php/ext/memcached \
-     --disable-memcached-sasl \
- && docker-php-ext-install /usr/src/php/ext/memcached \
- && rm -rf /usr/src/php/ext/memcached
-
-
 RUN curl -sS https://getcomposer.org/installer | \
   php -- --install-dir=/usr/local/bin --filename=composer --prefer-dist
-
-
 
 # Install Xdebug
 RUN pecl install -o -f xdebug-2.6.1 && docker-php-ext-enable xdebug
@@ -61,9 +49,8 @@ ENV PHP_PM_MAX_CHILDREN 10
 ENV PHP_PM_START_SERVERS 4
 ENV PHP_PM_MIN_SPARE_SERVERS 2
 ENV PHP_PM_MAX_SPARE_SERVERS 6
-ENV APP_MAGE_MODE default
 
-COPY conf/www.conf /usr/local/etc/php-fpm.d/
+# COPY conf/www.conf /usr/local/etc/php-fpm.d/
 COPY conf/php.ini /usr/local/etc/php/
 COPY conf/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 COPY conf/php-fpm.conf /usr/local/etc/

@@ -11,9 +11,8 @@ services:
     links:
       - db
       - phpfpm
-      - redis-magento
-      - mailcatcher
-      - memcached
+      - redis
+      - elasticsearch01
     volumes: &appvolumes
       - ./html:/var/www/html
       - ./.composer:/var/www/.composer
@@ -22,7 +21,7 @@ services:
       - $HOME/.ssh/known_hosts:/var/www/.ssh/known_hosts
     ports:
       - 80
-    networks: &appnetworks
+    networks:
       default:
         ipv4_address: 172.20.0.3
     environment:
@@ -39,6 +38,7 @@ services:
       - db
     links:
       - db
+      - elasticsearch01
     volumes: *appvolumes
     ports:
       - 9000
@@ -72,24 +72,15 @@ services:
     volumes: *appvolumes
     env_file: .env/setup.env
 
-  redis-magento:
+  redis:
     image: redis:3.0.7
-    container_name: vulpea_redis_os
+    container_name: vulpea_redis_session
     ports:
       - 6379
       - 1985
     networks:
       default:
         ipv4_address: 172.20.0.6
-
-  memcached:
-    image: memcached:1.4.35
-    container_name: vulpea_memcached_os
-    ports:
-      - 11211
-    networks:
-      default:
-        ipv4_address: 172.20.0.7
 
   mailcatcher:
      build: ./.docker/mailcatcher
@@ -103,10 +94,10 @@ services:
          ipv4_address: 172.20.0.8
 
   elasticsearch01:
-      image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
       container_name: vulpea_elasticsearch01_os
       environment:
-        - node.name=elasticsearch01
+        - node.name=elasticsearch1
         - cluster.name=magento-cluster
         - bootstrap.memory_lock=true
         - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
@@ -122,32 +113,6 @@ services:
       networks:
          default:
            ipv4_address: 172.20.0.9
-
-  kibana:
-     image: docker.elastic.co/kibana/kibana:6.1.4
-     container_name: vulpea_kibana_os
-     environment:
-         - "ELASTICSEARCH_URL=http://elasticsearch01:9200"
-     ports:
-       - 5601
-     networks:
-        default:
-          ipv4_address: 172.20.0.10
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash-oss:6.1.4
-    container_name: vulpea_logstash_os
-    volumes:
-      - ./.docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./.docker/logstash/pipeline:/usr/share/logstash/pipeline:ro
-      - ./html/var/log:/var/logstash/magento-logs
-    ports:
-      - 9600
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    networks:
-          default:
-            ipv4_address: 172.20.0.11
 
 networks:
   default:

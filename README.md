@@ -29,7 +29,7 @@ Please follow the next steps:
 
 7. Add the next text in hosts file of your OS system:
 
-`172.20.0.5 sandbox.local`
+`172.20.0.3 sandbox.local`
 
 8. Open the browser and type the next link: http://sandbox.local/
 
@@ -40,12 +40,8 @@ Please follow the next steps:
 |M2 PHP|172.20.0.4|
 |M2 MySQl|172.20.0.5|
 |M2 Redis|172.20.0.6|
-|M2 Memcached|172.20.0.7|
 |M2 Mailcatcher|172.20.0.8|
 |M2 Elaticsearch01|172.20.0.9|
-|M2 Kibana|172.20.0.10|
-|M2 Logstash|172.20.0.11|
-
 
 ## Enter magento(PHP) container to run commands
 `docker-compose exec -u www-data phpfpm bash`
@@ -54,16 +50,35 @@ Please follow the next steps:
 ## Use Redis and Memcached for cache.
 Add the following to app/etc/env.php 
 `   'session' =>
-        array (
-            'save' => 'memcached',
-            'save_path' => 'memcached:11211',
-        ),
+        [
+            'save' => 'redis',
+            'redis' => [
+                        'host' => 'redis',
+                        'port' => '6379',
+                        'password' => '',
+                        'timeout' => '2.5',
+                        'persistent_identifier' => '',
+                        'database' => '0',
+                        'compression_threshold' => '2048',
+                        'compression_library' => 'gzip',
+                        'log_level' => '1',
+                        'max_concurrency' => '6',
+                        'break_after_frontend' => '5',
+                        'break_after_adminhtml' => '30',
+                        'first_lifetime' => '600',
+                        'bot_first_lifetime' => '60',
+                        'bot_lifetime' => '7200',
+                        'disable_locking' => '0',
+                        'min_lifetime' => '60',
+                        'max_lifetime' => '2592000'
+                    ]
+        ],
     'cache' => [
         'frontend' => [
             'default' => [
                 'backend' => 'Cm_Cache_Backend_Redis',
                 'backend_options' => [
-                    'server' => 'redis-magento',
+                    'server' => 'redis',
                     'database' => '0',
                     'port' => '6379'
                 ]
@@ -71,7 +86,7 @@ Add the following to app/etc/env.php
             'page_cache' => [
                 'backend' => 'Cm_Cache_Backend_Redis',
                 'backend_options' => [
-                    'server' => 'redis-magento',
+                    'server' => 'redis',
                     'port' => '6379',
                     'database' => '1',
                     'compress_data' => '0'
